@@ -1,6 +1,22 @@
 from typing import Optional, List
 
-def main(example: Optional[List[str]] = None):
+def main1(example: Optional[List[str]] = None):
+    with open('./day01_input.txt','r') as f:
+        moves: List[str] = example if example else\
+            [line.strip() for line in f.readlines()]
+        
+        # dial is 0-99 inclusive (100 entries)
+        num_0 = 0
+        position = 50
+        for move in moves:
+            spaces = int(move[1:])
+            if move[0]=="L": spaces *= -1
+            position += spaces
+            position %= 100
+            if position == 0: num_0 += 1
+        print(num_0)
+
+def main2(example: Optional[List[str]] = None):
     with open('./day01_input.txt','r') as f:
         moves: List[str] = example if example else\
             [line.strip() for line in f.readlines()]
@@ -28,6 +44,5 @@ def main(example: Optional[List[str]] = None):
         print('ans', num_0)
 
 if __name__ == '__main__':
-    # main(["L68","L30","R48","L5","R60","L55","L1","L99","R14","L82"])
-    # main(["R1000","L1000","L50","R1","L1","L1","R1","R100","R1"])
-    main() # ans 6561 accepted
+    main1() # ans 1145 accepted
+    main2() # ans 6561 accepted
