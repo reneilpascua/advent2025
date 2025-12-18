@@ -5,11 +5,19 @@ def process_input(f: TextIO): # choose the appropriate return for the input
     return f.readlines()
     return [line.strip() for line in f.readlines()]
 
-def main1(example: Optional[str] = None):
+def solve1(data):
+    pass
+
+def solve2(data):
+    pass
+
+def main(example: Optional[str] = None):
     with open('./day00_input.txt') as f:
-        input = process_input(f) if not example else example
+        data = process_input(f) if not example else example
+        print(solve1(data))
+        # print(solve2(data))
 
 if __name__ == '__main__':
-    # example = 
-    # main1(example)
-    main1()
+    example = None
+    main(example)
+    # main()
