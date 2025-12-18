@@ -1,5 +1,5 @@
 from typing import Optional, List, Dict, TextIO
-from functools import lru_cache
+from functools import cache
 
 def process_input(f: TextIO) -> Dict[str,List[str]]: # choose the appropriate return for the input
     lines = [line.strip() for line in f.readlines()]
@@ -25,7 +25,7 @@ def solve1(data: Dict[str,List[str]]) -> int:
 def solve2(data: Dict[str,List[str]]) -> int:
     
     seen = set()
-    @lru_cache(None)
+    @cache
     def dfs(node, dac, fft):
         nonlocal seen
 
