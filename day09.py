@@ -16,8 +16,7 @@ def main1(example: Optional[List[List[int]]] = None):
         largest = max(largest, get_area(input[i], input[j]))
     print(largest)
 
-    # according to chatgpt, u would use "convex hull" for this...
-    # which isn't really leetcode/interview friendly
+    # convex hull??
 
 def main2(example: Optional[List[List[int]]] = None):
   with open('./day09_input.txt') as f:
@@ -116,10 +115,13 @@ def main2(example: Optional[List[List[int]]] = None):
       for row in grid:
         print(row)
 
+    printbounds(xbounds)
+    printbounds(ybounds)
+    return
     # AREA CALCULATIONS ####################################################
-    # print('xbounds: ',xbounds)
-    # print('ybounds: ',ybounds)
+    
     processed = 0
+    skipped = 0
     largest = 0
     for i in range(n):
       for j in range(i+1,n):
@@ -131,10 +133,37 @@ def main2(example: Optional[List[List[int]]] = None):
         area = get_area(input[i], input[j])
         if area > largest and inbounds(input[i],input[j]):
           largest = area
-        
+        else:
+          skipped += 1
+
         processed += 1
-        if processed%100==0: print(f'{processed=}, {largest=}')
+        if processed%100==0: print(f'{processed=}, {skipped=}, {largest=}')
     print(largest)
+
+def cross(o, a, b):
+  # o -> a -> b is ccw if positive, cw if negative
+  return (a[1]-o[1])*(b[0]-o[0]) - (a[0]-o[0])*(b[1]-o[1])
+
+def convex_hull(points: List[List[int]]) -> List[List[int]]:
+  if len(points) <= 1: return points
+  points.sort(key = lambda x: (x[0], x[1])) # sort by x, then y
+
+  # lower hull, need triplets of ccw, ie. cross(o,a,b) > 0
+  lower = []
+  for p in points:
+    while len(lower)>=2 and cross(lower[-2], lower[-1], p) <= 0:
+      lower.pop()
+    lower.append(p)
+  
+  # upper hull, also ccw but going from right to left
+  upper = []
+  for p in points[::-1]:
+    while len(upper)>=2 and cross(upper[-2], upper[-1], p) <= 0:
+      upper.pop()
+    upper.append(p)
+
+  # remove duplicate points
+  return lower[:-1]+upper[:-1]
 
 if __name__ == '__main__':
   example = [ # (x,y)
@@ -147,9 +176,23 @@ if __name__ == '__main__':
     (2,3),
     (7,3)
   ]
-
   example = [list(ex) for ex in example]
+  example2 = [
+    (1,1),
+    (1,20),
+    (5,20),
+    (5,17),
+    (3,17),
+    (3,14),
+    (5,14),
+    (5,10),
+    (3,10),
+    (3,1)
+  ]
+  example2 = [list(ex) for ex in example2]
+  # example2 proves my current 'boundary-finding' algo doesnt even work properly
+
   # main1(example) # ans 50
   # main1()
-  # main2(example) # ans 24
-  main2()
+  main2(example2) # ans 24
+  # main2()
